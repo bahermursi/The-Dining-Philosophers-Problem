@@ -21,30 +21,30 @@ void return_forks(int index){
 	//leaving the fork after eating the fork
 	printf("\nPhilosopher %d finished.", index);
 	printf("\nPhilosopher %d returned left fork.", index);
-	pthread_mutex_lock(&forks[index]);
+	pthread_mutex_unlock(&forks[index]);
 	printf("\nPhilosopher %d returned right fork.\n", index);
-	pthread_mutex_lock(&forks[(index + 1) % 5]);
+	pthread_mutex_unlock(&forks[(index + 1) % 5]);
 }
 void pickup_forks(int index){
 	//grabbing the forks for eating
 	//check for the availabe fork
 	if (index > (index + 1) % philosopher_number){
 		printf("\nPhilosopher %d wants left fork.", index);
-		pthread_mutex_unlock(&forks[index]);
+		pthread_mutex_lock(&forks[index]);
 		printf("\nPhilosopher %d grabbed left fork.\n", index);
 		
 		printf("\nPhilosopher %d wants right fork.", index);
-		pthread_mutex_unlock(&forks[(index + 1) % 5]);
+		pthread_mutex_lock(&forks[(index + 1) % 5]);
 		printf("\nPhilosopher %d grabbed right fork.\n", index);
 	}
 	else{
 		
 		printf("\nPhilosopher %d wants right fork.", index);
-		pthread_mutex_unlock(&forks[(index + 1) % 5]);
+		pthread_mutex_lock(&forks[(index + 1) % 5]);
 		printf("\nPhilosopher %d grabbed right fork.\n", index);
 		
 		printf("\nPhilosopher %d wants left fork.", index);
-		pthread_mutex_unlock(&forks[index]);
+		pthread_mutex_lock(&forks[index]);
 		printf("\nPhilosopher %d grabbed left fork.\n", index);
 		
 	}
@@ -63,9 +63,6 @@ void runner(int index){
 	//leave forks
 	return_forks(index);
 }
-
-
-pthread_cond_t cond_var;
 
 int main(int argc, const char * argv[]) {
 	//intializing the mutex for the forks
